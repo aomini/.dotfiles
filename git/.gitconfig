@@ -1,0 +1,14 @@
+[user]
+	name = rakeshshubhu
+	email = rak3sh.shrestha@gmail.com
+[alias]
+	st = status
+	ci = commit -m
+	last = log -1 HEAD
+	br = branch
+	co = checkout
+	cleanlog = log --oneline
+[credential]
+	helper = store
+[core]
+	editor = vim
