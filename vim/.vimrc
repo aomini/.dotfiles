@@ -8,6 +8,8 @@ Plug 'prettier/vim-prettier', {'do': 'yarn install'}
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'tpope/vim-commentary'
 Plug 'ryanoasis/vim-devicons'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 let g:coc_global_extensions = ['coc-prettier', 'coc-eslint', 'coc-snippets', 'coc-pairs', 'coc-tsserver', 'coc-json']
 call plug#end()
 

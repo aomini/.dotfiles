@@ -1,4 +1,4 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+#Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -110,4 +110,14 @@ alias gtp="cd projects"
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Increases the movement speed of cursor
-# xset r rate 300 50
+xset r rate 300 50
+
+# FZF with fd library
+# For key bindings sourced fzf key binding with the instructions from command "apt-cache show fzf"
+source /usr/share/doc/fzf/examples/key-bindings.zsh
+#Append this line to ~/.zshrc to enable fuzzy auto-completion for Zsh:
+source /usr/share/doc/fzf/examples/completion.zsh
+# For only files you can use it like `fdfind --type f`
+export FZF_DEFAULT_COMMAND='fdfind --color=always --exclude .git'
+export FZF_DEFAULT_OPTS="--ansi"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
