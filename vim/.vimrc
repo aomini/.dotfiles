@@ -192,3 +192,18 @@ nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+
+" http://vimcasts.org/episodes/soft-wrapping-text/#:~:text=If%20you%20want%20to%20make,you%20can%20enable%20%3Aset%20linebreak%20.
+" Softwrapping
+set wrap linebreak nolist
+" Motions on wrapped display lines should be prefixed with g in general
+vmap <D-j> gj
+vmap <D-k> gk
+vmap <D-4> g$
+vmap <D-6> g^
+vmap <D-0> g0
+nmap <D-j> gj
+nmap <D-k> gk
+nmap <D-4> g$
+nmap <D-6> g^
+nmap <D-0> g0
