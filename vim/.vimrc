@@ -1,11 +1,18 @@
+" Compile c++
+autocmd vimEnter *.cpp map <F8> :w <CR> :!clear ; g++ --std=c++17 %; if [ -f a.out ]; then time ./a.out; rm a.out; fi <CR>
+
 " Specify a directory for plugins
 call plug#begin('~/.vim/plugged')
 Plug 'neoclide/coc.nvim', {'branch' : 'release'}
+Plug 'gruvbox-community/gruvbox'
+Plug 'jiangmiao/auto-pairs'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'preservim/nerdtree'
 Plug 'prettier/vim-prettier', {'do': 'yarn install'}
 Plug 'maxmellon/vim-jsx-pretty'
+Plug 'cdelledonne/vim-cmake'
+Plug 'voldikss/vim-floaterm'
 Plug 'tpope/vim-commentary'
 Plug 'ryanoasis/vim-devicons'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -13,13 +20,65 @@ Plug 'junegunn/fzf.vim'
 let g:coc_global_extensions = ['coc-prettier', 'coc-eslint', 'coc-snippets', 'coc-pairs', 'coc-tsserver', 'coc-json']
 call plug#end()
 
-set tabstop=2
-set shiftwidth=2
-:set relativenumber
+
+" Floaterm
+let g:floaterm_position = 'bottom'
+let g:floaterm_width = 1.0
+let g:floaterm_height= 0.4
+
+nmap <c-t> :FloatermNew fff<cr>
+
+" fzf files finder
+nmap <c-p> :Files <cr>
+
+" cmake
+let g:cmake_link_compile_commands = 1
+nmap <leader>cg :CMakeGenerate<cr>
+nmap <leader>cb: CMakeBuild<cr>
+
+"Set Colors
+set termguicolors
+colo gruvbox
+
+"
+" set tabstop=2
+" set shiftwidth=2
+set ts=2 sts=2 sw=2 et ai si
+
+" Highlight cursor line underneath the cursor horizontally & vertically
+set cursorline
+set cursorcolumn
+
+" Set belloff
+set belloff=all
+
+" Change vim cursor lines
+let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+set ttimeout
+set ttimeoutlen=1
+set ttyfast
+
+" Set no backup
+set nobackup
+set incsearch
+set hlsearch
+set showmatch
+
+" Set relative plugin
+set rnu
 set encoding=UTF-8
 " To enable copy paste with clipboard
 " @referece https://vim.fandom.com/wiki/Accessing_the_system_clipboard
-set clipboard=unnamedplus
+if system('uname -s') == "Darwin\n"
+  set clipboard=unnamed "OSX"
+else
+  set clipboard=unnamedplus "Linux"
+endif
+
+" init filetype
+filetype plugin indent on
 
 " Prettier auto-format
 let g:prettier#autoformat = 1
@@ -60,16 +119,17 @@ endif
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
 
 " Use <c-space> to trigger completion.
 if has('nvim')
@@ -207,3 +267,8 @@ nmap <D-k> gk
 nmap <D-4> g$
 nmap <D-6> g^
 nmap <D-0> g0
+
+" Fix tab issue
+" https://github.com/neoclide/coc.nvim/issues/3167#issuecomment-1364375820
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
