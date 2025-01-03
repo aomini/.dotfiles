@@ -1,4 +1,9 @@
-" Compile c++
+" We need to install coc.nvim,
+" After installing the plugin with vplug
+" do cd ~/.vim/plugged/coc.nvim then do yarn install
+" For C++ do , :CocInstall coc-clangd
+
+"" Compile c++
 autocmd vimEnter *.cpp map <F8> :w <CR> :!clear ; g++ --std=c++17 %; if [ -f a.out ]; then time ./a.out; rm a.out; fi <CR>
 
 " Specify a directory for plugins
@@ -14,12 +19,17 @@ Plug 'maxmellon/vim-jsx-pretty'
 Plug 'cdelledonne/vim-cmake'
 Plug 'voldikss/vim-floaterm'
 Plug 'tpope/vim-commentary'
+" Requirement: Install ryanoasis nerd font for icons
 Plug 'ryanoasis/vim-devicons'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'easymotion/vim-easymotion'
+Plug 'tpope/vim-repeat'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 let g:coc_global_extensions = ['coc-prettier', 'coc-eslint', 'coc-snippets', 'coc-pairs', 'coc-tsserver', 'coc-json']
 call plug#end()
 
+syntax on
 
 " Floaterm
 let g:floaterm_position = 'bottom'
@@ -40,7 +50,7 @@ nmap <leader>cb: CMakeBuild<cr>
 set termguicolors
 colo gruvbox
 
-"
+" 
 " set tabstop=2
 " set shiftwidth=2
 set ts=2 sts=2 sw=2 et ai si
