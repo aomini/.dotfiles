@@ -26,15 +26,62 @@ vim.opt.wrap = true
 
 lvim.builtin.which_key.mappings["r"] = {
   name = "Run & build",
-  c = { "<cmd>:w <CR> <cmd>term clear; g++ --std=c++17 %; if [ -f a.out ]; then time ./a.out; rm a.out; fi <CR> <cmd>startinsert<CR>", "Build C++ code" }
+  c    = { "<cmd>:w <CR> <cmd>term clear; g++ --std=c++17 %; if [ -f a.out ]; then time ./a.out; rm a.out; fi <CR> <cmd>startinsert<CR>", "Build C++ code" },
+  d    = { "<cmd>:w <CR> <cmd>term clear; g++ --std=c++17 --debug %;<CR>", "Compile C++ with debug flags" },
 }
-
 
 -- Fold
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.foldenable = false
 lvim.plugins = {
+  {
+    "ThePrimeagen/harpoon",
+    branch = "harpoon2",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    event = "VeryLazy",
+    config = function()
+      local harpoon = require('harpoon')
+      harpoon:setup({
+        settings = {
+          save_on_toggle = true
+        }
+      })
+
+      -- basic telescope configuration
+      local conf = require("telescope.config").values
+      local function toggle_telescope(harpoon_files)
+        local file_paths = {}
+        for _, item in ipairs(harpoon_files.items) do
+          table.insert(file_paths, item.value)
+        end
+
+        require("telescope.pickers").new({
+        }, {
+          -- Default: Harpoon
+          prompt_title = "Pudge Hook",
+          finder = require("telescope.finders").new_table({
+            results = file_paths,
+          }),
+          --previewer = conf.file_previewer({}),
+          sorter = conf.generic_sorter({}),
+          initial_mode = "normal", -- Start in normal mode
+        }):find()
+      end
+
+      vim.keymap.set("n", "<leader>hf", function() toggle_telescope(harpoon:list()) end,
+        { desc = "Open harpoon window" })
+    end,
+    keys = {
+      { "<leader>ha", function() require('harpoon'):list():add() end },
+      { "<leader>hn", function() require('harpoon'):list():next() end },
+      { "<leader>hp", function() require('harpoon'):list():prev() end },
+      { "<leader>h1", function() require('harpoon'):list():select(1) end, desc = "Harpoon to file 1" },
+      { "<leader>h2", function() require('harpoon'):list():select(2) end, desc = "Harpoon to file 2" },
+      { "<leader>h3", function() require('harpoon'):list():select(3) end, desc = "Harpoon to file 3" },
+      { "<leader>h4", function() require('harpoon'):list():select(4) end, desc = "Harpoon to file 4" },
+    }
+  },
   {
     'windwp/nvim-ts-autotag',
     config = function()
@@ -193,6 +240,9 @@ autocmd('TermOpen', {
 autocmd('TermClose', {
   pattern = 'term://*',
   callback = function()
-    vim.api.nvim_input("<CR>")
+    local buffnr = vim.api.nvim_get_current_buf();
+    -- local jobId = vim.api.nvim_buf_get_var(buffnr, "term_job_id");
+    print(buffnr)
+    -- vim.api.nvim_input("<CR>")
   end,
 })
