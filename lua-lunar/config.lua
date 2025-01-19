@@ -1,4 +1,9 @@
+reload('user.options');
+
 lvim.format_on_save = true
+lvim.builtin.cmp.cmdline.enable = true
+
+
 
 -- local capabilities = require("lvim.lsp").common_capabilities()
 -- capabilities.offsetEncoding = { "utf-16" }
@@ -35,6 +40,61 @@ vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.foldenable = false
 lvim.plugins = {
+  -- lazy.nvim
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "rcarriga/nvim-notify",
+    },
+    config = function()
+      require("noice").setup({
+        cmdline = {
+          format = {
+            search_up = {
+              view = "cmdline_popup"
+            },
+            search_down = {
+              view = "cmdline_popup"
+            }
+          }
+        },
+        routes = {
+          -- Hide written messages
+          {
+            filter = {
+              event = "msg_show",
+              kind = "",
+              find = "written",
+            },
+            opts = { skip = true },
+          },
+        },
+        lsp = {
+          -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+          override = {
+            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+            ["vim.lsp.util.stylize_markdown"] = true,
+            ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
+          },
+        },
+        -- you can enable a preset for easier configuration
+        presets = {
+          bottom_search = false,        -- use a classic bottom cmdline for search
+          command_palette = true,       -- position the cmdline and popupmenu together
+          long_message_to_split = true, -- long messages will be sent to a split
+          inc_rename = false,           -- enables an input dialog for inc-rename.nvim
+          lsp_doc_border = false,       -- add a border to hover docs and signature help
+        },
+      })
+    end,
+    keys = {
+      -- Dismiss noice
+      { "<leader>nd", "<cmd>NoiceDismiss<CR>", { silent = true, desc = "Dismiss noice messages" } },
+
+    }
+  },
   {
     "ThePrimeagen/harpoon",
     branch = "harpoon2",
@@ -69,17 +129,19 @@ lvim.plugins = {
         }):find()
       end
 
-      vim.keymap.set("n", "<leader>hf", function() toggle_telescope(harpoon:list()) end,
+      vim.keymap.set("n", "<leader>th", function() toggle_telescope(harpoon:list()) end,
         { desc = "Open harpoon window" })
     end,
     keys = {
+      -- Normal harpoon for deletion
+      { "<leader>0",  function() require('harpoon').ui:toggle_quick_menu(require('harpoon'):list()) end },
       { "<leader>ha", function() require('harpoon'):list():add() end },
       { "<leader>hn", function() require('harpoon'):list():next() end },
       { "<leader>hp", function() require('harpoon'):list():prev() end },
-      { "<leader>h1", function() require('harpoon'):list():select(1) end, desc = "Harpoon to file 1" },
-      { "<leader>h2", function() require('harpoon'):list():select(2) end, desc = "Harpoon to file 2" },
-      { "<leader>h3", function() require('harpoon'):list():select(3) end, desc = "Harpoon to file 3" },
-      { "<leader>h4", function() require('harpoon'):list():select(4) end, desc = "Harpoon to file 4" },
+      { "<leader>h1", function() require('harpoon'):list():select(1) end,                               desc = "Harpoon to file 1" },
+      { "<leader>h2", function() require('harpoon'):list():select(2) end,                               desc = "Harpoon to file 2" },
+      { "<leader>h3", function() require('harpoon'):list():select(3) end,                               desc = "Harpoon to file 3" },
+      { "<leader>h4", function() require('harpoon'):list():select(4) end,                               desc = "Harpoon to file 4" },
     }
   },
   {
